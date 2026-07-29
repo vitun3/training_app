@@ -1,0 +1,17 @@
+@startuml
+left to right direction
+cloud "Cloud Provider" as Cloud
+node "Load Balancer" as LB
+node "Kubernetes Cluster" as K8s
+node "API Pods" as API
+node "Worker Pods" as Workers
+database "Managed PostgreSQL" as DB
+database "Redis" as Cache
+Cloud --> LB
+LB --> K8s
+K8s --> API
+K8s --> Workers
+API --> DB
+Workers --> DB
+API --> Cache
+@enduml

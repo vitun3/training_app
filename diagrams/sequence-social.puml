@@ -1,0 +1,9 @@
+@startuml
+actor User
+participant "Social API" as API
+database "PostgreSQL" as DB
+User -> API : publish post
+API -> DB : save post
+DB --> API : persisted
+API --> User : post created
+@enduml

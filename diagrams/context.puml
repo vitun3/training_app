@@ -1,0 +1,8 @@
+@startuml
+left to right direction
+actor User
+actor Coach
+rectangle "Training App" as App
+User --> App : uses
+Coach --> App : manages clients
+@enduml

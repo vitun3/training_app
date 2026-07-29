@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+package "Client" {
+  [Web App]
+  [Mobile App]
+}
+package "Application" {
+  [API Gateway]
+  [Training Service]
+  [Social Service]
+  [Notification Service]
+}
+package "Data" {
+  database "PostgreSQL"
+  database "Redis"
+}
+[Web App] --> [API Gateway]
+[Mobile App] --> [API Gateway]
+[API Gateway] --> [Training Service]
+[API Gateway] --> [Social Service]
+[API Gateway] --> [Notification Service]
+[Training Service] --> [PostgreSQL]
+[Social Service] --> [Redis]
+[Notification Service] --> [PostgreSQL]
+@enduml
