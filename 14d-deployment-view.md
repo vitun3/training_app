@@ -1,13 +1,109 @@
-# 12. Deployment View
+# 14.4 Инфраструктурное представление
 
-## Deployment Topology
-- A load balancer fronts the web application and API gateway.
-- The application is deployed as containerized services in a managed Kubernetes cluster.
-- A managed PostgreSQL database stores core transactional data.
-- Redis is used for caching and temporary state.
-- Object storage holds media files and exported content.
+## 14.4.1 Назначение
 
-## Operational Concerns
-- Use health checks, autoscaling, and rolling deployments.
-- Collect logs and metrics centrally for observability.
-- Separate production and staging environments.
+Инфраструктурное представление показывает физическое размещение компонентов системы и основные элементы вычислительной инфраструктуры.
+
+На данном уровне предполагается использование контейнеризированного развертывания и оркестрации.
+
+---
+
+## 14.4.2 Основные инфраструктурные компоненты
+
+| Компонент | Назначение |
+|---|---|
+| Mobile Client | Пользовательский интерфейс |
+| Load Balancer | Распределение входящего трафика |
+| API Gateway / Ingress | Вход в серверную часть |
+| Container Platform | Запуск сервисов |
+| Event Bus | Обмен событиями |
+| Service Databases | Хранение данных сервисов |
+| Analytics Storage | Хранение аналитических данных |
+| Monitoring | Мониторинг |
+| Logging | Централизованный сбор логов |
+| Identity Provider | Аутентификация и управление идентификацией |
+
+---
+
+## 14.4.3 Логическая схема размещения
+
+```text
+                       INTERNET
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │ Load Balancer   │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │ API Gateway /   │
+                  │ Ingress         │
+                  └────────┬────────┘
+                           │
+          ┌────────────────┼─────────────────┐
+          │                │                 │
+          ▼                ▼                 ▼
+      User Service   Workout Service   Social Service
+          │                │                 │
+          ▼                ▼                 ▼
+      User DB         Workout DB         Social DB
+                           │
+                           ▼
+                     ┌────────────┐
+                     │ Event Bus  │
+                     └─────┬──────┘
+                           │
+             ┌─────────────┼──────────────┐
+             ▼             ▼              ▼
+         Analytics    Competition   Recommendation
+             │             │              │
+             ▼             ▼              ▼
+         Analytics DB  Competition DB Recommendation DB
+```
+
+---
+
+## 14.4.4 Отказоустойчивость
+
+Критичные компоненты инфраструктуры не должны быть представлены единственным экземпляром.
+
+Предусматриваются:
+
+- несколько экземпляров сервисов;
+- автоматическое восстановление экземпляров;
+- распределение нагрузки;
+- резервирование инфраструктуры;
+- репликация критичных данных;
+- резервное копирование;
+- мониторинг состояния компонентов.
+
+---
+
+## 14.4.5 Масштабирование
+
+Масштабирование выполняется независимо для отдельных компонентов.
+
+Например:
+
+```text
+Обычная нагрузка:
+
+Workout Service
+[Instance 1]
+[Instance 2]
+
+
+Пиковая нагрузка:
+
+Workout Service
+[Instance 1]
+[Instance 2]
+[Instance 3]
+[Instance 4]
+[Instance 5]
+```
+
+При этом сервисы, не испытывающие роста нагрузки, масштабировать не требуется.
+
+---
