@@ -1,9 +1,0 @@
-@startuml
-actor User
-participant "Training API" as API
-database "PostgreSQL" as DB
-User -> API : create workout plan
-API -> DB : save plan
-DB --> API : persisted
-API --> User : success
-@enduml
